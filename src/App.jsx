@@ -5,7 +5,6 @@ import { navItems } from "./nav-items";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import { useState } from "react";
-import { Toaster } from "sonner";
 
 const queryClient = new QueryClient();
 
@@ -18,22 +17,21 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <Toaster />
       <BrowserRouter>
-          <div className="min-h-screen flex flex-col md:flex-row">
-            <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-            <div className="flex-1 flex flex-col">
-              <Header toggleSidebar={toggleSidebar} />
-              <main className="flex-grow p-6">
-                <Routes>
-                  {navItems.map(({ to, element }) => (
-                    <Route key={to} path={to} element={element} />
-                  ))}
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
-              </main>
-            </div>
+        <div className="min-h-screen flex flex-col md:flex-row">
+          <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+          <div className="flex-1 flex flex-col">
+            <Header toggleSidebar={toggleSidebar} />
+            <main className="flex-grow p-6">
+              <Routes>
+                {navItems.map(({ to, element }) => (
+                  <Route key={to} path={to} element={element} />
+                ))}
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </main>
           </div>
-        </BrowserRouter>
-      </TooltipProvider>
+        </div>
+      </BrowserRouter>
     </QueryClientProvider>
   );
 };
