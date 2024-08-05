@@ -1,53 +1,37 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Save, ArrowLeft } from "lucide-react";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { toast } from 'sonner';
 
 const EditDocument = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
 
-  const { data: document, isLoading, isError } = useQuery({
-    queryKey: ['document', id],
-    queryFn: async () => {
-      if (id === 'new') return { title: '', content: '' };
-      // Replace with actual API call
-      return {
+  useEffect(() => {
+    if (id !== 'new') {
+      // Fetch document data if editing an existing document
+      // This is a mock fetch, replace with actual API call
+      const mockDocument = {
         id: id,
         title: 'Sample Document',
         content: '<p>This is a sample document content.</p>'
       };
-    },
-  });
-
-  const [title, setTitle] = useState(document?.title || '');
-  const [content, setContent] = useState(document?.content || '');
-
-  const saveMutation = useMutation({
-    mutationFn: async (updatedDoc) => {
-      // Replace with actual API call
-      console.log('Saving document:', updatedDoc);
-      return updatedDoc;
-    },
-    onSuccess: (savedDoc) => {
-      queryClient.setQueryData(['document', savedDoc.id], savedDoc);
-      toast.success('Document saved successfully');
-      navigate('/documents');
-    },
-    onError: () => {
-      toast.error('Failed to save document');
-    },
-  });
+      setTitle(mockDocument.title);
+      setContent(mockDocument.content);
+    }
+  }, [id]);
 
   const handleSave = () => {
-    saveMutation.mutate({ id, title, content });
+    // Save the document (mock implementation)
+    console.log('Saving document:', { id, title, content });
+    // Navigate back to documents list
+    navigate('/documents');
   };
 
   return (

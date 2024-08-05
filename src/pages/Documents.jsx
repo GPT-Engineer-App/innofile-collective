@@ -1,65 +1,25 @@
-import { useState, useCallback } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, Plus, Edit, Upload } from "lucide-react";
+import { FileText, Plus, Edit } from "lucide-react";
 import { Link } from 'react-router-dom';
-import { useDropzone } from 'react-dropzone';
-import { toast } from 'sonner';
 
 const Documents = () => {
+  const [documents, setDocuments] = useState([
+    { id: 1, title: 'Project Overview', content: 'This document outlines the main goals and objectives of our project.' },
+    { id: 2, title: 'Meeting Notes', content: 'Notes from our last team meeting, including action items and decisions.' },
+    { id: 3, title: 'Technical Specifications', content: 'Detailed technical specifications for the new feature implementation.' },
+  ]);
+
   const [newDocTitle, setNewDocTitle] = useState('');
-  const queryClient = useQueryClient();
-
-  const { data: documents, isLoading, isError } = useQuery({
-    queryKey: ['documents'],
-    queryFn: async () => {
-      // Replace with actual API call
-      return [
-        { id: 1, title: 'Project Overview', content: 'This document outlines the main goals and objectives of our project.' },
-        { id: 2, title: 'Meeting Notes', content: 'Notes from our last team meeting, including action items and decisions.' },
-        { id: 3, title: 'Technical Specifications', content: 'Detailed technical specifications for the new feature implementation.' },
-      ];
-    },
-  });
-
-  const addDocumentMutation = useMutation({
-    mutationFn: async (newDoc) => {
-      // Replace with actual API call
-      return { id: Date.now(), ...newDoc };
-    },
-    onSuccess: (newDoc) => {
-      queryClient.setQueryData(['documents'], (oldDocs) => [...oldDocs, newDoc]);
-      toast.success('Document added successfully');
-    },
-    onError: () => {
-      toast.error('Failed to add document');
-    },
-  });
 
   const addDocument = () => {
     if (newDocTitle.trim()) {
-      addDocumentMutation.mutate({ title: newDocTitle, content: 'New document content...' });
+      setDocuments([...documents, { id: Date.now(), title: newDocTitle, content: 'New document content...' }]);
       setNewDocTitle('');
     }
   };
-
-  const onDrop = useCallback((acceptedFiles) => {
-    acceptedFiles.forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const fileContent = reader.result;
-        setDocuments((prevDocuments) => [
-          ...prevDocuments,
-          { id: Date.now(), title: file.name, content: fileContent }
-        ]);
-      };
-      reader.readAsText(file);
-    });
-  }, []);
-
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
@@ -68,25 +28,18 @@ const Documents = () => {
         <Card className="mb-6">
           <CardHeader>
             <CardTitle>Add New Document</CardTitle>
-            <CardDescription>Create a new document for your team or upload a file</CardDescription>
+            <CardDescription>Create a new document for your team</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-col space-y-4">
-              <div className="flex space-x-2">
-                <Input 
-                  placeholder="New document title" 
-                  value={newDocTitle}
-                  onChange={(e) => setNewDocTitle(e.target.value)}
-                />
-                <Button onClick={addDocument}>
-                  <Plus className="mr-2 h-4 w-4" /> Add
-                </Button>
-              </div>
-              <div {...getRootProps()} className={`border-2 border-dashed rounded-md p-4 text-center cursor-pointer ${isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}>
-                <input {...getInputProps()} />
-                <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                <p className="mt-2 text-sm text-gray-600">Drag 'n' drop some files here, or click to select files</p>
-              </div>
+            <div className="flex space-x-2">
+              <Input 
+                placeholder="New document title" 
+                value={newDocTitle}
+                onChange={(e) => setNewDocTitle(e.target.value)}
+              />
+              <Button onClick={addDocument}>
+                <Plus className="mr-2 h-4 w-4" /> Add
+              </Button>
             </div>
           </CardContent>
         </Card>
