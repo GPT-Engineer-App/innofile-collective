@@ -1,5 +1,6 @@
 import { Toaster } from "@/components/ui/sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { navItems } from "./nav-items";
 import Header from "./components/Header";
@@ -21,7 +22,7 @@ const App = () => {
           <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
           <div className="flex-1 flex flex-col">
             <Header toggleSidebar={toggleSidebar} />
-            <main className="flex-grow p-6">
+            <main className="flex-grow p-6 overflow-auto">
               <Routes>
                 {navItems.map(({ to, element }) => (
                   <Route key={to} path={to} element={element} />
