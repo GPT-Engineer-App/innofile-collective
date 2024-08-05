@@ -1,23 +1,46 @@
 import { useState, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, Plus, Edit, Upload } from "lucide-react";
 import { Link } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
+import { toast } from 'sonner';
 
 const Documents = () => {
-  const [documents, setDocuments] = useState([
-    { id: 1, title: 'Project Overview', content: 'This document outlines the main goals and objectives of our project.' },
-    { id: 2, title: 'Meeting Notes', content: 'Notes from our last team meeting, including action items and decisions.' },
-    { id: 3, title: 'Technical Specifications', content: 'Detailed technical specifications for the new feature implementation.' },
-  ]);
-
   const [newDocTitle, setNewDocTitle] = useState('');
+  const queryClient = useQueryClient();
+
+  const { data: documents, isLoading, isError } = useQuery({
+    queryKey: ['documents'],
+    queryFn: async () => {
+      // Replace with actual API call
+      return [
+        { id: 1, title: 'Project Overview', content: 'This document outlines the main goals and objectives of our project.' },
+        { id: 2, title: 'Meeting Notes', content: 'Notes from our last team meeting, including action items and decisions.' },
+        { id: 3, title: 'Technical Specifications', content: 'Detailed technical specifications for the new feature implementation.' },
+      ];
+    },
+  });
+
+  const addDocumentMutation = useMutation({
+    mutationFn: async (newDoc) => {
+      // Replace with actual API call
+      return { id: Date.now(), ...newDoc };
+    },
+    onSuccess: (newDoc) => {
+      queryClient.setQueryData(['documents'], (oldDocs) => [...oldDocs, newDoc]);
+      toast.success('Document added successfully');
+    },
+    onError: () => {
+      toast.error('Failed to add document');
+    },
+  });
 
   const addDocument = () => {
     if (newDocTitle.trim()) {
-      setDocuments([...documents, { id: Date.now(), title: newDocTitle, content: 'New document content...' }]);
+      addDocumentMutation.mutate({ title: newDocTitle, content: 'New document content...' });
       setNewDocTitle('');
     }
   };

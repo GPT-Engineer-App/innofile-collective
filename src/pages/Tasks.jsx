@@ -1,24 +1,47 @@
 import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckSquare, Plus, LayoutDashboard } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link } from "react-router-dom";
+import { toast } from 'sonner';
 
 const Tasks = () => {
-  const [tasks, setTasks] = useState([
-    { id: 1, title: 'Design mockups', status: 'In Progress' },
-    { id: 2, title: 'Implement login functionality', status: 'To Do' },
-    { id: 3, title: 'Write API documentation', status: 'Done' },
-  ]);
-
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [newTaskStatus, setNewTaskStatus] = useState('To Do');
+  const queryClient = useQueryClient();
+
+  const { data: tasks, isLoading, isError } = useQuery({
+    queryKey: ['tasks'],
+    queryFn: async () => {
+      // Replace with actual API call
+      return [
+        { id: 1, title: 'Design mockups', status: 'In Progress' },
+        { id: 2, title: 'Implement login functionality', status: 'To Do' },
+        { id: 3, title: 'Write API documentation', status: 'Done' },
+      ];
+    },
+  });
+
+  const addTaskMutation = useMutation({
+    mutationFn: async (newTask) => {
+      // Replace with actual API call
+      return { id: Date.now(), ...newTask };
+    },
+    onSuccess: (newTask) => {
+      queryClient.setQueryData(['tasks'], (oldTasks) => [...oldTasks, newTask]);
+      toast.success('Task added successfully');
+    },
+    onError: () => {
+      toast.error('Failed to add task');
+    },
+  });
 
   const addTask = () => {
     if (newTaskTitle.trim()) {
-      setTasks([...tasks, { id: Date.now(), title: newTaskTitle, status: newTaskStatus }]);
+      addTaskMutation.mutate({ title: newTaskTitle, status: newTaskStatus });
       setNewTaskTitle('');
       setNewTaskStatus('To Do');
     }
