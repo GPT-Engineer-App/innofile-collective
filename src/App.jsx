@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { navItems } from "./nav-items";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
@@ -25,9 +25,10 @@ const App = () => {
               <Header toggleSidebar={toggleSidebar} />
               <main className="flex-grow p-6">
                 <Routes>
-                  {navItems.map(({ to, page }) => (
-                    <Route key={to} path={to} element={page} />
+                  {navItems.map(({ to, element }) => (
+                    <Route key={to} path={to} element={element} />
                   ))}
+                  <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </main>
             </div>
