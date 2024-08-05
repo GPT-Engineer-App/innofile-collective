@@ -1,80 +1,56 @@
-import { useState } from 'react';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, CheckSquare } from "lucide-react";
+import { FileText, CheckSquare, BarChart2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Index = () => {
-  const [documents, setDocuments] = useState([
-    { id: 1, title: 'Project Overview', content: 'This document outlines the main goals and objectives of our project.' },
-    { id: 2, title: 'Meeting Notes', content: 'Notes from our last team meeting, including action items and decisions.' },
-  ]);
-
-  const [tasks, setTasks] = useState([
-    { id: 1, title: 'Design mockups', status: 'In Progress' },
-    { id: 2, title: 'Implement login functionality', status: 'To Do' },
-  ]);
-
   return (
     <div className="min-h-screen bg-gray-100 p-4">
-      <h1 className="text-4xl font-bold mb-8 text-center">InnoFile Manager</h1>
-      <Tabs defaultValue="documents" className="max-w-4xl mx-auto">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="documents">Documents</TabsTrigger>
-          <TabsTrigger value="tasks">Tasks</TabsTrigger>
-        </TabsList>
-        <TabsContent value="documents">
-          <Card>
+      <h1 className="text-4xl font-bold mb-8 text-center">InnoFile Manager Dashboard</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <Link to="/documents">
+          <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
-              <CardTitle>Documents</CardTitle>
-              <CardDescription>Manage your team's documents and knowledge base.</CardDescription>
+              <CardTitle className="flex items-center">
+                <FileText className="mr-2 h-6 w-6 text-blue-500" />
+                Documents
+              </CardTitle>
+              <CardDescription>Manage your team's documents</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {documents.map(doc => (
-                  <div key={doc.id} className="flex items-center space-x-2">
-                    <FileText className="h-5 w-5 text-blue-500" />
-                    <div>
-                      <h3 className="font-semibold">{doc.title}</h3>
-                      <p className="text-sm text-gray-500">{doc.content.substring(0, 50)}...</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-4 flex space-x-2">
-                <Input placeholder="New document title" />
-                <Button>Add Document</Button>
-              </div>
+              <p className="text-2xl font-bold">15</p>
+              <p className="text-sm text-gray-500">Total documents</p>
             </CardContent>
           </Card>
-        </TabsContent>
-        <TabsContent value="tasks">
-          <Card>
+        </Link>
+        <Link to="/tasks">
+          <Card className="hover:shadow-lg transition-shadow">
             <CardHeader>
-              <CardTitle>Tasks</CardTitle>
-              <CardDescription>Track and manage your team's tasks.</CardDescription>
+              <CardTitle className="flex items-center">
+                <CheckSquare className="mr-2 h-6 w-6 text-green-500" />
+                Tasks
+              </CardTitle>
+              <CardDescription>Track and manage tasks</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                {tasks.map(task => (
-                  <div key={task.id} className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <CheckSquare className="h-5 w-5 text-green-500" />
-                      <span>{task.title}</span>
-                    </div>
-                    <span className="text-sm text-gray-500">{task.status}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-4 flex space-x-2">
-                <Input placeholder="New task title" />
-                <Button>Add Task</Button>
-              </div>
+              <p className="text-2xl font-bold">8</p>
+              <p className="text-sm text-gray-500">Active tasks</p>
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+        </Link>
+        <Card className="hover:shadow-lg transition-shadow">
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <BarChart2 className="mr-2 h-6 w-6 text-purple-500" />
+              Analytics
+            </CardTitle>
+            <CardDescription>Project performance</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold">85%</p>
+            <p className="text-sm text-gray-500">Overall progress</p>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
