@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckSquare, Plus, LayoutDashboard } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CheckSquare, Plus, List } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link } from "react-router-dom";
 
-const Tasks = () => {
+const KanbanTasks = () => {
   const [tasks, setTasks] = useState([
     { id: 1, title: 'Design mockups', status: 'In Progress' },
     { id: 2, title: 'Implement login functionality', status: 'To Do' },
@@ -24,22 +24,23 @@ const Tasks = () => {
     }
   };
 
+  const columns = ['To Do', 'In Progress', 'Done'];
+
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold">Tasks</h1>
-        <Link to="/kanban-tasks">
+        <h1 className="text-4xl font-bold">Kanban Tasks</h1>
+        <Link to="/tasks">
           <Button variant="outline">
-            <LayoutDashboard className="mr-2 h-4 w-4" />
-            Kanban View
+            <List className="mr-2 h-4 w-4" />
+            List View
           </Button>
         </Link>
       </div>
-      <div className="max-w-4xl mx-auto">
-        <Card className="mb-6">
+      <div className="mb-6">
+        <Card>
           <CardHeader>
             <CardTitle>Add New Task</CardTitle>
-            <CardDescription>Create a new task for your team</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex space-x-2">
@@ -54,9 +55,9 @@ const Tasks = () => {
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="To Do">To Do</SelectItem>
-                  <SelectItem value="In Progress">In Progress</SelectItem>
-                  <SelectItem value="Done">Done</SelectItem>
+                  {columns.map((status) => (
+                    <SelectItem key={status} value={status}>{status}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <Button onClick={addTask}>
@@ -65,30 +66,28 @@ const Tasks = () => {
             </div>
           </CardContent>
         </Card>
-        <div className="space-y-4">
-          {tasks.map(task => (
-            <Card key={task.id}>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <CheckSquare className="mr-2 h-5 w-5 text-green-500" />
-                    {task.title}
-                  </div>
-                  <span className={`text-sm px-2 py-1 rounded ${
-                    task.status === 'To Do' ? 'bg-yellow-200 text-yellow-800' :
-                    task.status === 'In Progress' ? 'bg-blue-200 text-blue-800' :
-                    'bg-green-200 text-green-800'
-                  }`}>
-                    {task.status}
-                  </span>
-                </CardTitle>
-              </CardHeader>
-            </Card>
-          ))}
-        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {columns.map((column) => (
+          <div key={column} className="bg-white rounded-lg shadow p-4">
+            <h2 className="text-xl font-semibold mb-4">{column}</h2>
+            <div className="space-y-2">
+              {tasks.filter(task => task.status === column).map(task => (
+                <Card key={task.id}>
+                  <CardHeader>
+                    <CardTitle className="text-sm flex items-center">
+                      <CheckSquare className="mr-2 h-4 w-4 text-green-500" />
+                      {task.title}
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
-export default Tasks;
+export default KanbanTasks;
