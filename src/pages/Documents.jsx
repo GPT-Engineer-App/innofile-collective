@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, Plus } from "lucide-react";
+import { FileText, Plus, Edit } from "lucide-react";
+import { Link } from 'react-router-dom';
 
 const Documents = () => {
   const [documents, setDocuments] = useState([
@@ -46,9 +47,16 @@ const Documents = () => {
           {documents.map(doc => (
             <Card key={doc.id}>
               <CardHeader>
-                <CardTitle className="flex items-center">
-                  <FileText className="mr-2 h-5 w-5 text-blue-500" />
-                  {doc.title}
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <FileText className="mr-2 h-5 w-5 text-blue-500" />
+                    {doc.title}
+                  </div>
+                  <Link to={`/edit-document/${doc.id}`}>
+                    <Button variant="outline" size="sm">
+                      <Edit className="mr-2 h-4 w-4" /> Edit
+                    </Button>
+                  </Link>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -56,6 +64,13 @@ const Documents = () => {
               </CardContent>
             </Card>
           ))}
+        </div>
+        <div className="mt-6">
+          <Link to="/edit-document/new">
+            <Button>
+              <Plus className="mr-2 h-4 w-4" /> Create New Document
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
